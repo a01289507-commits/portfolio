@@ -1,163 +1,99 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import HeroShape from './HeroShape';
-
-const GOLD = '#c9a227';
+import { useRef } from "react";
+import Image from "next/image";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
 export default function Hero() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        defaults: {
-          ease: 'power3.out',
-        },
-      });
+  useGSAP(
+    () => {
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-      tl.fromTo(
-        '.hero-eyebrow',
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6 }
-      )
-        .fromTo(
-          '.hero-line',
-          { y: 40, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            stagger: 0.12,
-          },
-          '-=0.3'
+      tl.from(".hero-eyebrow", { y: 20, opacity: 0, duration: 0.6 })
+        .from(
+          ".hero-heading span",
+          { y: 40, opacity: 0, duration: 0.7, stagger: 0.08 },
+          "-=0.3"
         )
-        .fromTo(
-          '.hero-sub',
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.6 },
-          '-=0.4'
+        .from(".hero-sub", { y: 20, opacity: 0, duration: 0.6 }, "-=0.4")
+        .from(
+          ".hero-cta",
+          { y: 20, opacity: 0, duration: 0.6, stagger: 0.15 },
+          "-=0.4"
         )
-        .fromTo(
-          '.hero-cta',
-          { y: 20, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.6,
-            stagger: 0.1,
-          },
-          '-=0.3'
-        )
-        .fromTo(
-          '.hero-rule',
-          { scaleX: 0 },
-          {
-            scaleX: 1,
-            duration: 1,
-            transformOrigin: 'left',
-          },
-          '-=0.5'
+        .from(
+          ".hero-photo",
+          { scale: 0.9, opacity: 0, duration: 0.9, ease: "power2.out" },
+          "-=0.8"
         );
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
+    },
+    { scope: heroRef }
+  );
 
   return (
     <section
-      id="hero"
-      ref={containerRef}
-      className="relative min-h-screen flex items-center bg-black overflow-hidden pt-28 md:pt-24"
+      ref={heroRef}
+      className="relative flex min-h-screen w-full items-center overflow-hidden bg-black px-6 py-24 md:px-16"
     >
-      <HeroShape />
+      {/* Gold ambient glow accents */}
+      <div className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-[#c9a227]/20 blur-[120px]" />
+      <div className="pointer-events-none absolute -right-24 bottom-10 h-80 w-80 rounded-full bg-[#c9a227]/10 blur-[140px]" />
 
-      {/* Gold Glow */}
-      <div
-        className="absolute top-1/3 right-0 w-[500px] h-[500px] rounded-full opacity-[0.07] blur-[120px] pointer-events-none"
-        style={{ backgroundColor: GOLD }}
-      />
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 md:grid-cols-2">
+        {/* Left: Text content */}
+        <div>
+          <p className="hero-eyebrow mb-4 inline-block rounded-full border border-[#c9a227]/40 px-4 py-1 text-sm tracking-widest text-[#c9a227]">
+            FULL STACK DEVELOPER
+          </p>
 
-      {/* Hero Content */}
-      <div className="relative max-w-6xl mx-auto px-6 w-full">
-        {/* Eyebrow */}
-        <p
-          className="hero-eyebrow text-[13px] tracking-[0.3em] uppercase mb-6"
-          style={{ color: GOLD }}
-        >
-          Full-Stack Developer
-        </p>
+          <h1 className="hero-heading text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl">
+            <span className="block">Hi, I&apos;m</span>
+            <span className="block bg-gradient-to-r from-[#c9a227] via-[#e8cf6e] to-[#c9a227] bg-clip-text text-transparent">
+              Arooj Kainat.
+            </span>
+            <span className="block">I build Full-Stack</span>
+            <span className="block">web experiences.</span>
+          </h1>
 
-        {/* Heading */}
-        <h1
-          className="text-[#f5f1e8] font-light leading-[1.05] mb-8"
-          style={{
-            fontFamily: 'Georgia, serif',
-            fontSize: 'clamp(2.5rem, 7vw, 5.5rem)',
-          }}
-        >
-          <span className="hero-line block overflow-hidden">
-            Building interfaces
-          </span>
+          <p className="hero-sub mt-6 max-w-md text-base text-gray-400 sm:text-lg">
+            I design and develop modern, responsive web applications using
+            Next.js, TypeScript &amp; Tailwind CSS — turning ideas into
+            polished, real-world products.
+          </p>
 
-          <span className="hero-line block overflow-hidden">
-            that feel <span style={{ color: GOLD }}>alive.</span>
-          </span>
-        </h1>
-
-        {/* Decorative Rule */}
-        <div
-          className="hero-rule h-[1px] w-24 mb-8"
-          style={{ backgroundColor: GOLD }}
-        />
-
-        {/* Description */}
-        <p className="hero-sub text-[#a8a8a8] text-base md:text-lg max-w-xl mb-10 leading-relaxed">
-          I&apos;m Arooj — a full-stack developer crafting fast, animated,
-          production-ready web apps with Next.js, TypeScript, and GSAP.
-          Background in Physics, Computer Science &amp; Mathematics informs
-          how I approach every build.
-        </p>
-
-        {/* CTA Buttons */}
-        <div className="flex flex-wrap items-center gap-4">
-          <a
-            href="#projects"
-            className="hero-cta px-7 py-3 text-[13px] tracking-[0.12em] uppercase transition-all duration-300"
-            style={{
-              backgroundColor: GOLD,
-              color: '#0a0a0a',
-            }}
-          >
-            View Projects
-          </a>
-
-          <a
-            href="#contact"
-            className="hero-cta px-7 py-3 text-[13px] tracking-[0.12em] uppercase border transition-all duration-300 hover:bg-[#c9a227] hover:text-black text-[#c9a227]"
-            style={{
-              borderColor: GOLD,
-            }}
-          >
-            Get in Touch
-          </a>
+          <div className="mt-8 flex flex-wrap gap-4">
+            <a
+              href="#projects"
+              className="hero-cta rounded-full bg-[#c9a227] px-8 py-3 font-medium text-black transition-transform hover:scale-105"
+            >
+              View My Work
+            </a>
+            <a
+              href="#contact"
+              className="hero-cta rounded-full border border-[#c9a227]/50 px-8 py-3 font-medium text-[#c9a227] transition-colors hover:bg-[#c9a227]/10"
+            >
+              Let&apos;s Talk
+            </a>
+          </div>
         </div>
-      </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-        <span
-          className="text-[10px] tracking-[0.2em] uppercase"
-          style={{ color: '#666' }}
-        >
-          Scroll
-        </span>
-
-        <div
-          className="w-[1px] h-10 animate-pulse"
-          style={{ backgroundColor: GOLD }}
-        />
+        {/* Right: Photo */}
+        <div className="hero-photo relative mx-auto aspect-[4/5] w-full max-w-sm">
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#c9a227]/30 via-transparent to-transparent" />
+          <div className="relative h-full w-full overflow-hidden rounded-3xl border border-[#c9a227]/30 bg-neutral-900">
+            <Image
+              src="/arooj-photo.png"
+              alt="Arooj Kainat — Full Stack Developer"
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 400px"
+            />
+          </div>
+        </div>
       </div>
     </section>
   );

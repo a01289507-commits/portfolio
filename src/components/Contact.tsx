@@ -4,22 +4,61 @@ import { useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { Mail, Briefcase, Send } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const GOLD = "#c9a227";
+
+/* ------------------------------------------------------------------ */
+/*  Inline brand icons (lucide dropped brand icons in newer versions)  */
+/* ------------------------------------------------------------------ */
+
+function GithubIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+    </svg>
+  );
+}
+
+function LinkedinIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+    </svg>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /*  Data — edit freely                                                  */
 /* ------------------------------------------------------------------ */
 
 const SOCIALS = [
-  { label: "Email", value: "a01289507@gmail.com" },
+  {
+    label: "Email",
+    value: "a01289507@gmail.com",
+    href: "mailto:a01289507@gmail.com",
+    icon: <Mail size={16} />,
+  },
   {
     label: "LinkedIn",
     value: "arooj-kainat",
     href: "https://linkedin.com/in/arooj-kainat-317b98264/",
+    icon: <LinkedinIcon />,
   },
-  { label: "GitHub", value: "github.com/aroojk", href: "https://github.com/a01289507-commits" },
-  { label: "Fiverr", value: "Arooj", href: "https://www.fiverr.com/sellers/aroojk0113/edit" },
+  {
+    label: "GitHub",
+    value: "github.com/aroojk",
+    href: "https://github.com/a01289507-commits",
+    icon: <GithubIcon />,
+  },
+  {
+    label: "Fiverr",
+    value: "Arooj",
+    href: "https://www.fiverr.com/sellers/aroojk0113/edit",
+    icon: <Briefcase size={16} />,
+  },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -45,32 +84,18 @@ export default function Contact() {
         },
       });
 
-      gsap.from(".contact-field", {
-        y: 20,
+      gsap.from(".contact-card", {
+        y: 30,
         opacity: 0,
-        duration: 0.7,
+        duration: 0.8,
         ease: "power3.out",
-        stagger: 0.1,
+        stagger: 0.15,
         scrollTrigger: {
-          trigger: ".contact-form",
-          start: "top 80%",
+          trigger: sectionRef.current,
+          start: "top 70%",
         },
       });
 
-      gsap.from(".social-row", {
-        x: -16,
-        opacity: 0,
-        duration: 0.6,
-        ease: "power2.out",
-        stagger: 0.08,
-        scrollTrigger: {
-          trigger: ".social-list",
-          start: "top 85%",
-        },
-      });
-
-      // Signature move: the big gold "Let's talk." headline underline
-      // draws in, echoing the same underline motif used in Skills/About
       gsap.fromTo(
         ".contact-underline",
         { scaleX: 0 },
@@ -111,9 +136,13 @@ export default function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative w-full bg-black text-white py-28 md:py-36"
+      className="relative w-full overflow-hidden bg-black text-white py-28 md:py-36"
     >
-      <div className="max-w-6xl mx-auto px-6 md:px-10">
+      {/* Ambient background accents */}
+      <div className="pointer-events-none absolute -right-40 top-0 h-96 w-96 rounded-full bg-[#c9a227]/[0.06] blur-[140px]" />
+      <div className="pointer-events-none absolute -left-32 bottom-10 h-80 w-80 rounded-full bg-[#c9a227]/[0.04] blur-[140px]" />
+
+      <div className="relative max-w-6xl mx-auto px-6 md:px-10">
         {/* Eyebrow */}
         <p className="contact-reveal text-[#c9a227] text-xs tracking-[0.25em] font-semibold uppercase mb-4">
           Contact
@@ -130,19 +159,21 @@ export default function Contact() {
           <div className="contact-underline absolute -bottom-4 left-0 h-[2px] w-32 bg-[#c9a227] origin-left" />
         </div>
 
-        <p className="contact-reveal text-white/60 text-base md:text-lg max-w-xl mb-20 leading-relaxed mt-10">
+        <p className="contact-reveal text-white/60 text-base md:text-lg max-w-xl mb-16 leading-relaxed mt-10">
           Have a project in mind, or just want to say hi? My inbox is open —
           I read and reply to every message myself.
         </p>
 
-        {/* items-start: keeps both columns aligned to the same top edge */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 lg:items-start">
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="contact-form space-y-8">
-            <div className="contact-field">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:items-start">
+          {/* Form — now in a card */}
+          <form
+            onSubmit={handleSubmit}
+            className="contact-card rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-10 space-y-7 backdrop-blur-sm"
+          >
+            <div>
               <label
                 htmlFor="name"
-                className="block text-xs tracking-[0.2em] uppercase text-white/40 mb-3"
+                className="block text-xs tracking-[0.2em] uppercase text-white/40 mb-2"
               >
                 Your Name
               </label>
@@ -155,14 +186,14 @@ export default function Contact() {
                 onChange={handleChange}
                 placeholder="Jane Doe"
                 autoComplete="off"
-                className="w-full bg-transparent border-b border-white/20 py-3 text-white placeholder:text-white/25 focus:outline-none focus:border-[#c9a227] focus:shadow-[0_1px_0_0_#c9a227] transition-all"
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-white/25 focus:outline-none focus:border-[#c9a227] focus:ring-1 focus:ring-[#c9a227]/40 transition-all"
               />
             </div>
 
-            <div className="contact-field">
+            <div>
               <label
                 htmlFor="email"
-                className="block text-xs tracking-[0.2em] uppercase text-white/40 mb-3"
+                className="block text-xs tracking-[0.2em] uppercase text-white/40 mb-2"
               >
                 Email
               </label>
@@ -175,14 +206,14 @@ export default function Contact() {
                 onChange={handleChange}
                 placeholder="jane@company.com"
                 autoComplete="off"
-                className="w-full bg-transparent border-b border-white/20 py-3 text-white placeholder:text-white/25 focus:outline-none focus:border-[#c9a227] focus:shadow-[0_1px_0_0_#c9a227] transition-all"
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-white/25 focus:outline-none focus:border-[#c9a227] focus:ring-1 focus:ring-[#c9a227]/40 transition-all"
               />
             </div>
 
-            <div className="contact-field">
+            <div>
               <label
                 htmlFor="message"
-                className="block text-xs tracking-[0.2em] uppercase text-white/40 mb-3"
+                className="block text-xs tracking-[0.2em] uppercase text-white/40 mb-2"
               >
                 Message
               </label>
@@ -194,20 +225,24 @@ export default function Contact() {
                 value={form.message}
                 onChange={handleChange}
                 placeholder="Tell me a bit about your project..."
-                className="w-full bg-transparent border-b border-white/20 py-3 text-white placeholder:text-white/25 focus:outline-none focus:border-[#c9a227] focus:shadow-[0_1px_0_0_#c9a227] transition-all resize-none"
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-white placeholder:text-white/25 focus:outline-none focus:border-[#c9a227] focus:ring-1 focus:ring-[#c9a227]/40 transition-all resize-none"
               />
             </div>
 
             <button
               type="submit"
               disabled={status === "sending"}
-              className="contact-field inline-flex items-center gap-3 bg-[#c9a227] text-black font-semibold text-sm tracking-wide uppercase px-8 py-4 hover:bg-[#e0b62f] transition-colors disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#c9a227] px-8 py-4 text-sm font-semibold uppercase tracking-wide text-black transition-colors hover:bg-[#e0b62f] disabled:opacity-60 sm:w-auto"
             >
-              {status === "sending"
-                ? "Sending..."
-                : status === "sent"
-                ? "Message Sent"
-                : "Send Message"}
+              {status === "sending" ? (
+                "Sending..."
+              ) : status === "sent" ? (
+                "Message Sent"
+              ) : (
+                <>
+                  Send Message <Send size={15} />
+                </>
+              )}
             </button>
 
             {status === "sent" && (
@@ -217,28 +252,36 @@ export default function Contact() {
             )}
           </form>
 
-          {/* Socials / direct info */}
-          <div className="social-list flex flex-col">
-            <div className="space-y-6">
+          {/* Socials / direct info — now in a card too */}
+          <div className="contact-card flex flex-col rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-10 backdrop-blur-sm">
+            <div className="space-y-2">
               {SOCIALS.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="social-row group flex items-center justify-between border-b border-white/10 pb-5 hover:border-[#c9a227]/50 transition-colors"
+                  className="group flex items-center justify-between gap-4 rounded-xl px-3 py-4 transition-colors hover:bg-[#c9a227]/[0.06]"
                 >
-                  <span className="text-xs tracking-[0.2em] uppercase text-white/40 group-hover:text-[#c9a227] transition-colors">
-                    {social.label}
+                  <span className="flex items-center gap-3">
+                    <span
+                      className="flex h-9 w-9 items-center justify-center rounded-full border transition-colors"
+                      style={{ borderColor: `${GOLD}40`, color: GOLD }}
+                    >
+                      {social.icon}
+                    </span>
+                    <span className="text-xs tracking-[0.2em] uppercase text-white/40 transition-colors group-hover:text-[#c9a227]">
+                      {social.label}
+                    </span>
                   </span>
-                  <span className="text-white/80 group-hover:text-white transition-colors text-sm md:text-base">
+                  <span className="text-sm text-white/80 transition-colors group-hover:text-white md:text-base">
                     {social.value}
                   </span>
                 </a>
               ))}
             </div>
 
-            <div className="mt-10 pt-8 border-t border-white/10">
+            <div className="mt-6 border-t border-white/10 pt-6">
               <p className="text-xs tracking-[0.2em] uppercase text-white/40 mb-2">
                 Based In
               </p>

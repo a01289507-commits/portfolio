@@ -8,6 +8,8 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const GOLD = "#c9a227";
+
 /* ------------------------------------------------------------------ */
 /*  Config — edit these to update links in one place                   */
 /* ------------------------------------------------------------------ */
@@ -37,7 +39,7 @@ const SOCIAL_LINKS = [
   },
   {
     label: "Email",
-    href: "a01289507@gmail.com", // TODO: replace with your actual email
+    href: "mailto:a01289507@gmail.com",
     icon: (
       <path d="M2 5.5A2.5 2.5 0 0 1 4.5 3h15A2.5 2.5 0 0 1 22 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5v-13Zm2.2.2 7.8 6.1 7.8-6.1H4.2Zm15.8 1.6-7.4 5.8a1 1 0 0 1-1.2 0L4 7.3V18.5c0 .28.22.5.5.5h15a.5.5 0 0 0 .5-.5V7.3Z" />
     ),
@@ -57,11 +59,8 @@ export default function Footer() {
 
   useGSAP(
     () => {
-      // Kill any leftover tween first — prevents duplicate/stacked
-      // animations (common with Fast Refresh) from masking speed changes.
       gsap.killTweensOf(".marquee-track");
 
-      // Continuous marquee scroll — higher duration = slower speed
       gsap.to(".marquee-track", {
         xPercent: -50,
         repeat: -1,
@@ -69,7 +68,6 @@ export default function Footer() {
         ease: "linear",
       });
 
-      // Fade the footer content up as it enters view
       gsap.from(".footer-reveal", {
         y: 20,
         opacity: 0,
@@ -86,7 +84,10 @@ export default function Footer() {
   );
 
   return (
-    <footer ref={footerRef} className="relative w-full bg-black text-white">
+    <footer ref={footerRef} className="relative w-full overflow-hidden bg-black text-white">
+      {/* Ambient glow */}
+      <div className="pointer-events-none absolute left-1/2 top-0 h-72 w-[600px] -translate-x-1/2 rounded-full bg-[#c9a227]/[0.05] blur-[140px]" />
+
       {/* Signature marquee band */}
       <div className="relative border-y border-[#c9a227]/30 overflow-hidden py-4">
         <div className="marquee-track flex w-max whitespace-nowrap will-change-transform">
@@ -103,17 +104,35 @@ export default function Footer() {
       </div>
 
       {/* Main footer content */}
-      <div className="max-w-6xl mx-auto px-6 md:px-10 py-16 md:py-20">
+      <div className="relative max-w-6xl mx-auto px-6 md:px-10 py-16 md:py-20">
         <div className="grid grid-cols-1 md:grid-cols-[1.3fr_1fr_1fr] gap-12 md:gap-8">
           {/* Brand */}
           <div className="footer-reveal">
             <p className="font-serif text-3xl mb-4">
               Arooj<span className="text-[#c9a227]">.</span>
             </p>
-            <p className="text-white/50 leading-relaxed max-w-xs">
+            <p className="text-white/50 leading-relaxed max-w-xs mb-6">
               Full-stack developer building fast, polished web experiences
               with Next.js, TypeScript, and Sanity CMS.
             </p>
+
+            {/* Circular social badges — quick access */}
+            <div className="flex gap-3">
+              {SOCIAL_LINKS.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target={link.label !== "Email" ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  aria-label={link.label}
+                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/60 transition-all hover:-translate-y-0.5 hover:border-[#c9a227] hover:text-[#c9a227]"
+                >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+                    {link.icon}
+                  </svg>
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* Navigate */}
@@ -126,7 +145,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-white/70 hover:text-[#c9a227] transition-colors"
+                    className="text-white/70 transition-colors hover:text-[#c9a227]"
                   >
                     {link.label}
                   </Link>
@@ -135,26 +154,28 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Connect */}
+          {/* Connect — detailed list */}
           <div className="footer-reveal">
             <p className="text-xs tracking-[0.2em] uppercase text-white/40 mb-5">
               Connect
             </p>
-            <ul className="space-y-3 mb-6">
+            <ul className="space-y-4">
               {SOCIAL_LINKS.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
                     target={link.label !== "Email" ? "_blank" : undefined}
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-3 text-white/70 hover:text-[#c9a227] transition-colors"
+                    className="group flex items-center gap-3 text-white/70 transition-colors hover:text-[#c9a227]"
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="w-4 h-4 fill-current shrink-0"
+                    <span
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-colors"
+                      style={{ borderColor: `${GOLD}30` }}
                     >
-                      {link.icon}
-                    </svg>
+                      <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current">
+                        {link.icon}
+                      </svg>
+                    </span>
                     {link.label}
                   </a>
                 </li>
@@ -170,15 +191,13 @@ export default function Footer() {
           </p>
 
           <button
-            onClick={() =>
-              window.scrollTo({ top: 0, behavior: "smooth" })
-            }
-            className="group inline-flex items-center gap-2 text-xs tracking-[0.2em] uppercase text-white/60 hover:text-[#c9a227] transition-colors"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="group inline-flex items-center gap-2 text-xs tracking-[0.2em] uppercase text-white/60 transition-colors hover:text-[#c9a227]"
           >
             Back to top
             <span
               aria-hidden
-              className="inline-block w-7 h-7 rounded-full border border-white/20 group-hover:border-[#c9a227] flex items-center justify-center transition-colors"
+              className="flex h-7 w-7 items-center justify-center rounded-full border border-white/20 transition-colors group-hover:border-[#c9a227]"
             >
               ↑
             </span>

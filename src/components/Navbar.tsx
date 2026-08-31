@@ -249,7 +249,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
         <a
-          href="#hero"
+          href="/"
           className="flex items-center gap-2 text-[#f5f1e8]"
         >
           <span

@@ -1,441 +1,20 @@
-// "use client";
-
-// import { useRef } from "react";
-// import Image from "next/image";
-// import Link from "next/link";
-// import { gsap } from "gsap";
-// import { ScrollTrigger } from "gsap/ScrollTrigger";
-// import { useGSAP } from "@gsap/react";
-// import { urlFor } from "@/src/sanity/lib/image"
-
-// gsap.registerPlugin(ScrollTrigger);
-
-// /* ------------------------------------------------------------------ */
-// /*  Types — mirrors the Sanity `project` schema                        */
-// /* ------------------------------------------------------------------ */
-
-// export type SanityProject = {
-//   _id: string;
-//   title: string;
-//   slug: { current: string };
-//   description: string;
-//   screenshot: any; // Sanity image object
-//   techStack?: string[];
-//   liveDemoUrl?: string;
-//   githubUrl?: string;
-//   featured?: boolean;
-//   order?: number;
-// };
-
-// type ProjectsProps = {
-//   projects: SanityProject[];
-// };
-
-// /* ------------------------------------------------------------------ */
-// /*  Single project card                                                */
-// /* ------------------------------------------------------------------ */
-
-// function ProjectCard({ project }: { project: SanityProject }) {
-//   const imageUrl = project.screenshot
-//     ? urlFor(project.screenshot).width(1200).height(800).url()
-//     : null;
-
-//   return (
-//     <div className="project-card group relative border border-white/10 hover:border-[#c9a227]/50 transition-colors duration-300">
-//       {/* Clickable area: image + title + description → detail page */}
-//       <Link href={`/projects/${project.slug.current}`}>
-//         {/* Screenshot */}
-//         <div className="relative w-full aspect-[4/3] overflow-hidden bg-white/5">
-//           {imageUrl ? (
-//             <Image
-//               src={imageUrl}
-//               alt={project.title}
-//               fill
-//               className="object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
-//               sizes="(max-width: 768px) 100vw, 50vw"
-//             />
-//           ) : (
-//             <div className="w-full h-full flex items-center justify-center text-white/20 text-sm">
-//               No preview
-//             </div>
-//           )}
-//           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-//         </div>
-
-//         <div className="px-6 md:px-8 pt-6 md:pt-8">
-//           <h3 className="font-serif text-2xl md:text-3xl mb-3 group-hover:text-[#c9a227] transition-colors">
-//             {project.title}
-//           </h3>
-
-//           <p className="text-white/60 leading-relaxed mb-5">
-//             {project.description}
-//           </p>
-//         </div>
-//       </Link>
-
-//       {/* Content below stays outside the Link (external links can't nest inside an <a>) */}
-//       <div className="px-6 md:px-8 pb-6 md:pb-8">
-//         {project.techStack && project.techStack.length > 0 && (
-//           <div className="flex flex-wrap gap-2 mb-6">
-//             {project.techStack.map((tech) => (
-//               <span
-//                 key={tech}
-//                 className="text-xs tracking-wide text-[#c9a227]/80 border border-[#c9a227]/30 rounded-full px-3 py-1"
-//               >
-//                 {tech}
-//               </span>
-//             ))}
-//           </div>
-//         )}
-
-//         <div className="flex items-center gap-6">
-//           {project.liveDemoUrl && (
-//             <a
-//               href={project.liveDemoUrl}
-//               target="_blank"
-//               rel="noopener noreferrer"
-//               className="inline-flex items-center gap-2 text-sm tracking-wide uppercase text-white/80 hover:text-[#c9a227] transition-colors"
-//             >
-//               Live Demo <span aria-hidden>↗</span>
-//             </a>
-//           )}
-//           {project.githubUrl && (
-//             <a
-//               href={project.githubUrl}
-//               target="_blank"
-//               rel="noopener noreferrer"
-//               className="inline-flex items-center gap-2 text-sm tracking-wide uppercase text-white/80 hover:text-[#c9a227] transition-colors"
-//             >
-//               GitHub <span aria-hidden>↗</span>
-//             </a>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// /* ------------------------------------------------------------------ */
-// /*  Section                                                             */
-// /* ------------------------------------------------------------------ */
-
-// export default function Projects({ projects }: ProjectsProps) {
-//   const sectionRef = useRef<HTMLDivElement>(null);
-
-//   const sorted = [...projects].sort(
-//     (a, b) => (a.order ?? 999) - (b.order ?? 999)
-//   );
-
-//   useGSAP(
-//     () => {
-//       gsap.from(".projects-reveal", {
-//         y: 24,
-//         opacity: 0,
-//         duration: 0.8,
-//         ease: "power3.out",
-//         stagger: 0.08,
-//         scrollTrigger: {
-//           trigger: sectionRef.current,
-//           start: "top 75%",
-//         },
-//       });
-
-//       gsap.utils.toArray<HTMLElement>(".project-card").forEach((card) => {
-//         gsap.from(card, {
-//           y: 40,
-//           opacity: 0,
-//           duration: 0.8,
-//           ease: "power3.out",
-//           scrollTrigger: {
-//             trigger: card,
-//             start: "top 85%",
-//           },
-//         });
-//       });
-//     },
-//     { scope: sectionRef, dependencies: [projects] }
-//   );
-
-//   return (
-//     <section
-//       id="projects"
-//       ref={sectionRef}
-//       className="relative w-full bg-black text-white py-28 md:py-36"
-//     >
-//       <div className="max-w-6xl mx-auto px-6 md:px-10">
-//         {/* Eyebrow */}
-//         <p className="projects-reveal text-[#c9a227] text-xs tracking-[0.25em] font-semibold uppercase mb-4">
-//           Work
-//         </p>
-//         <div className="projects-reveal w-10 h-px bg-[#c9a227] mb-10" />
-
-//         {/* Heading */}
-//         <h2 className="projects-reveal font-serif text-4xl md:text-6xl leading-[1.1] mb-6 max-w-xl">
-//           Featured <span className="text-[#c9a227]">Projects.</span>
-//         </h2>
-
-//         <p className="projects-reveal text-white/60 text-base md:text-lg max-w-xl mb-16 leading-relaxed">
-//           A selection of things I&apos;ve designed, built, and shipped end to
-//           end.
-//         </p>
-
-//         {/* Grid */}
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-//           {sorted.map((project) => (
-//             <ProjectCard key={project._id} project={project} />
-//           ))}
-//         </div>
-
-//         {sorted.length === 0 && (
-//           <p className="text-white/40 text-center py-20">
-//             Projects coming soon.
-//           </p>
-//         )}
-//       </div>
-//     </section>
-//   );
-// }
-
-
-// "use client";
-
-// import { useRef } from "react";
-// import Image from "next/image";
-// import Link from "next/link";
-// import { gsap } from "gsap";
-// import { ScrollTrigger } from "gsap/ScrollTrigger";
-// import { useGSAP } from "@gsap/react";
-// import { urlFor } from "@/src/sanity/lib/image"
-
-// gsap.registerPlugin(ScrollTrigger);
-
-// /* ------------------------------------------------------------------ */
-// /*  Types — mirrors the Sanity `project` schema                        */
-// /* ------------------------------------------------------------------ */
-
-// export type SanityProject = {
-//   _id: string;
-//   title: string;
-//   slug: { current: string };
-//   description: string;
-//   screenshot: any; // Sanity image object
-//   techStack?: string[];
-//   liveDemoUrl?: string;
-//   githubUrl?: string;
-//   featured?: boolean;
-//   order?: number;
-// };
-
-// type ProjectsProps = {
-//   projects: SanityProject[];
-// };
-
-// /* ------------------------------------------------------------------ */
-// /*  Single project card                                                */
-// /* ------------------------------------------------------------------ */
-
-// function ProjectCard({ project }: { project: SanityProject }) {
-//   const imageUrl = project.screenshot
-//     ? urlFor(project.screenshot).width(1200).height(800).url()
-//     : null;
-
-//   return (
-//     <div className="project-card group relative border border-white/10 hover:border-[#c9a227]/50 transition-colors duration-300">
-//       {/* Clickable area: image + title + description → detail page */}
-//       <Link href={`/projects/${project.slug.current}`}>
-//         {/* Screenshot — reduced height + darker overlay so home page stays light */}
-//         <div className="relative w-full aspect-[16/10] overflow-hidden bg-white/5">
-//           {imageUrl ? (
-//             <Image
-//               src={imageUrl}
-//               alt={project.title}
-//               fill
-//               className="object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105"
-//               sizes="(max-width: 768px) 100vw, 50vw"
-//             />
-//           ) : (
-//             <div className="w-full h-full flex items-center justify-center text-white/20 text-sm">
-//               No preview
-//             </div>
-//           )}
-//           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-//           {/* "View Project" pill shown on hover, so intent to see more is explicit */}
-//           <div className="absolute bottom-4 left-6 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-//             <span className="inline-flex items-center gap-2 text-xs tracking-[0.15em] uppercase text-[#c9a227] border border-[#c9a227]/50 rounded-full px-4 py-1.5 bg-black/40 backdrop-blur-sm">
-//               View Project <span aria-hidden>→</span>
-//             </span>
-//           </div>
-//         </div>
-
-//         <div className="px-6 md:px-8 pt-6 md:pt-8">
-//           <h3 className="font-serif text-2xl md:text-3xl mb-3 group-hover:text-[#c9a227] transition-colors">
-//             {project.title}
-//           </h3>
-
-//           {/* Truncated to 2 lines — full description lives on the project detail page */}
-//           <p className="text-white/60 leading-relaxed mb-5 line-clamp-2">
-//             {project.description}
-//           </p>
-//         </div>
-//       </Link>
-
-//       {/* Content below stays outside the Link (external links can't nest inside an <a>) */}
-//       <div className="px-6 md:px-8 pb-6 md:pb-8">
-//         {project.techStack && project.techStack.length > 0 && (
-//           <div className="flex flex-wrap gap-2 mb-6">
-//             {project.techStack.slice(0, 4).map((tech) => (
-//               <span
-//                 key={tech}
-//                 className="text-xs tracking-wide text-[#c9a227]/80 border border-[#c9a227]/30 rounded-full px-3 py-1"
-//               >
-//                 {tech}
-//               </span>
-//             ))}
-//             {project.techStack.length > 4 && (
-//               <span className="text-xs tracking-wide text-white/40 px-3 py-1">
-//                 +{project.techStack.length - 4} more
-//               </span>
-//             )}
-//           </div>
-//         )}
-
-//         <div className="flex items-center gap-6">
-//           <Link
-//             href={`/projects/${project.slug.current}`}
-//             className="inline-flex items-center gap-2 text-sm tracking-wide uppercase text-[#c9a227] hover:text-white transition-colors"
-//           >
-//             Case Study <span aria-hidden>→</span>
-//           </Link>
-//           {project.liveDemoUrl && (
-//             <a
-//               href={project.liveDemoUrl}
-//               target="_blank"
-//               rel="noopener noreferrer"
-//               className="inline-flex items-center gap-2 text-sm tracking-wide uppercase text-white/80 hover:text-[#c9a227] transition-colors"
-//             >
-//               Live Demo <span aria-hidden>↗</span>
-//             </a>
-//           )}
-//           {project.githubUrl && (
-//             <a
-//               href={project.githubUrl}
-//               target="_blank"
-//               rel="noopener noreferrer"
-//               className="inline-flex items-center gap-2 text-sm tracking-wide uppercase text-white/80 hover:text-[#c9a227] transition-colors"
-//             >
-//               GitHub <span aria-hidden>↗</span>
-//             </a>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// /* ------------------------------------------------------------------ */
-// /*  Section                                                             */
-// /* ------------------------------------------------------------------ */
-
-// export default function Projects({ projects }: ProjectsProps) {
-//   const sectionRef = useRef<HTMLDivElement>(null);
-
-//   const sorted = [...projects].sort(
-//     (a, b) => (a.order ?? 999) - (b.order ?? 999)
-//   );
-
-//   useGSAP(
-//     () => {
-//       gsap.from(".projects-reveal", {
-//         y: 24,
-//         opacity: 0,
-//         duration: 0.8,
-//         ease: "power3.out",
-//         stagger: 0.08,
-//         scrollTrigger: {
-//           trigger: sectionRef.current,
-//           start: "top 75%",
-//         },
-//       });
-
-//       gsap.utils.toArray<HTMLElement>(".project-card").forEach((card) => {
-//         gsap.from(card, {
-//           y: 40,
-//           opacity: 0,
-//           duration: 0.8,
-//           ease: "power3.out",
-//           scrollTrigger: {
-//             trigger: card,
-//             start: "top 85%",
-//           },
-//         });
-//       });
-//     },
-//     { scope: sectionRef, dependencies: [projects] }
-//   );
-
-//   return (
-//     <section
-//       id="projects"
-//       ref={sectionRef}
-//       className="relative w-full bg-black text-white py-28 md:py-36"
-//     >
-//       <div className="max-w-6xl mx-auto px-6 md:px-10">
-//         {/* Eyebrow */}
-//         <p className="projects-reveal text-[#c9a227] text-xs tracking-[0.25em] font-semibold uppercase mb-4">
-//           Work
-//         </p>
-//         <div className="projects-reveal w-10 h-px bg-[#c9a227] mb-10" />
-
-//         {/* Heading */}
-//         <h2 className="projects-reveal font-serif text-4xl md:text-6xl leading-[1.1] mb-6 max-w-xl">
-//           Featured <span className="text-[#c9a227]">Projects.</span>
-//         </h2>
-
-//         <p className="projects-reveal text-white/60 text-base md:text-lg max-w-xl mb-16 leading-relaxed">
-//           A selection of things I&apos;ve designed, built, and shipped end to
-//           end.
-//         </p>
-
-//         {/* Grid */}
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-//           {sorted.map((project) => (
-//             <ProjectCard key={project._id} project={project} />
-//           ))}
-//         </div>
-
-//         {sorted.length === 0 && (
-//           <p className="text-white/40 text-center py-20">
-//             Projects coming soon.
-//           </p>
-//         )}
-//       </div>
-//     </section>
-//   );
-// }
-
-
-
 "use client";
 
-import { useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(ScrollTrigger);
+import { ArrowUpRight } from "lucide-react";
+import { urlFor } from "../sanity/lib/image";
 
 /* ------------------------------------------------------------------ */
-/*  Types — mirrors the Sanity `project` schema                        */
+/*  Types                                                              */
 /* ------------------------------------------------------------------ */
 
-export type SanityProject = {
+type SanityProject = {
   _id: string;
   title: string;
   slug: { current: string };
   description: string;
-  screenshot: any; // Sanity image object — used only on the detail page
+  screenshot?: any;
   techStack?: string[];
   liveDemoUrl?: string;
   githubUrl?: string;
@@ -443,158 +22,147 @@ export type SanityProject = {
   order?: number;
 };
 
-type ProjectsProps = {
-  projects: SanityProject[];
-};
-
 /* ------------------------------------------------------------------ */
-/*  Single project card — no image here, image lives on detail page    */
+/*  Single project card                                                */
 /* ------------------------------------------------------------------ */
 
-function ProjectCard({ project }: { project: SanityProject }) {
+function ProjectCard({
+  title,
+  description,
+  thumbnail,
+  tags,
+  slug,
+  liveDemoUrl,
+  githubUrl,
+}: {
+  title: string;
+  description: string;
+  thumbnail: string | null;
+  tags?: string[];
+  slug: string;
+  liveDemoUrl?: string;
+  githubUrl?: string;
+}) {
   return (
-    <div className="project-card group relative border border-white/10 hover:border-[#c9a227]/50 transition-colors duration-300">
-      {/* Clickable area: title + description → detail page */}
-      <Link href={`/projects/${project.slug.current}`}>
-        <div className="px-6 md:px-8 pt-8 md:pt-10">
-          <h3 className="font-serif text-2xl md:text-3xl mb-3 group-hover:text-[#c9a227] transition-colors">
-            {project.title}
-          </h3>
-
-          {/* Truncated to 2 lines — full description lives on the project detail page */}
-          <p className="text-white/60 leading-relaxed mb-5 line-clamp-2">
-            {project.description}
-          </p>
-
-          <span className="inline-flex items-center gap-2 text-xs tracking-[0.15em] uppercase text-[#c9a227] group-hover:gap-3 transition-all">
-            View Project <span aria-hidden>→</span>
-          </span>
-        </div>
-      </Link>
-
-      {/* Content below stays outside the Link (external links can't nest inside an <a>) */}
-      <div className="px-6 md:px-8 pt-6 pb-8 md:pb-10">
-        {project.techStack && project.techStack.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-6">
-            {project.techStack.slice(0, 4).map((tech) => (
-              <span
-                key={tech}
-                className="text-xs tracking-wide text-[#c9a227]/80 border border-[#c9a227]/30 rounded-full px-3 py-1"
-              >
-                {tech}
-              </span>
-            ))}
-            {project.techStack.length > 4 && (
-              <span className="text-xs tracking-wide text-white/40 px-3 py-1">
-                +{project.techStack.length - 4} more
-              </span>
-            )}
+    <div className="group relative overflow-hidden rounded-2xl border border-[#c9a227]/15 bg-neutral-950 transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a227]/50 hover:shadow-[0_0_35px_-8px_rgba(201,162,39,0.35)]">
+      {/* Thumbnail */}
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-neutral-900">
+        {thumbnail ? (
+          <Image
+            src={thumbnail}
+            alt={`${title} — project screenshot`}
+            fill
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-sm text-gray-600">
+            No preview available
           </div>
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-80" />
 
-        <div className="flex items-center gap-6">
-          {project.liveDemoUrl && (
-            <a
-              href={project.liveDemoUrl}
+        <div className="absolute right-3 top-3 flex translate-y-[-8px] gap-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          {liveDemoUrl && (
+            <Link
+              href={liveDemoUrl}
               target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm tracking-wide uppercase text-white/80 hover:text-[#c9a227] transition-colors"
+              className="rounded-full bg-[#c9a227] p-2 text-black shadow-md transition-transform hover:scale-110"
+              aria-label={`View live demo of ${title}`}
             >
-              Live Demo <span aria-hidden>↗</span>
-            </a>
+              <ArrowUpRight size={16} />
+            </Link>
           )}
-          {project.githubUrl && (
-            <a
-              href={project.githubUrl}
+          {githubUrl && (
+            <Link
+              href={githubUrl}
               target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm tracking-wide uppercase text-white/80 hover:text-[#c9a227] transition-colors"
+              className="rounded-full bg-white/10 p-2 text-white backdrop-blur-sm shadow-md transition-transform hover:scale-110 hover:bg-white/20"
+              aria-label={`View GitHub repo of ${title}`}
             >
-              GitHub <span aria-hidden>↗</span>
-            </a>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+              </svg>
+            </Link>
           )}
         </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-5">
+        <h3 className="text-lg font-semibold text-white transition-colors group-hover:text-[#c9a227]">
+          {title}
+        </h3>
+        <p className="mt-2 line-clamp-2 text-sm text-gray-400">{description}</p>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          {(tags ?? []).slice(0, 4).map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full border border-[#c9a227]/25 px-3 py-1 text-xs text-[#c9a227]/80"
+            >
+              {tag}
+            </span>
+          ))}
+          {(tags?.length ?? 0) > 4 && (
+            <span className="rounded-full px-3 py-1 text-xs text-gray-500">
+              +{(tags?.length ?? 0) - 4} more
+            </span>
+          )}
+        </div>
+
+        <Link
+          href={`/projects/${slug}`}
+          className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-[#c9a227] transition-all group-hover:gap-2"
+        >
+          View Project
+          <ArrowUpRight size={14} />
+        </Link>
       </div>
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Section                                                             */
+/*  Section wrapper — renders heading + grid of project cards          */
 /* ------------------------------------------------------------------ */
 
-export default function Projects({ projects }: ProjectsProps) {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  const sorted = [...projects].sort(
-    (a, b) => (a.order ?? 999) - (b.order ?? 999)
-  );
-
-  useGSAP(
-    () => {
-      gsap.from(".projects-reveal", {
-        y: 24,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.08,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 75%",
-        },
-      });
-
-      gsap.utils.toArray<HTMLElement>(".project-card").forEach((card) => {
-        gsap.from(card, {
-          y: 40,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-          },
-        });
-      });
-    },
-    { scope: sectionRef, dependencies: [projects] }
-  );
+export default function Project({ projects }: { projects: SanityProject[] }) {
+  if (!projects || projects.length === 0) return null;
 
   return (
-    <section
-      id="projects"
-      ref={sectionRef}
-      className="relative w-full bg-black text-white py-28 md:py-36"
-    >
-      <div className="max-w-6xl mx-auto px-6 md:px-10">
-        {/* Eyebrow */}
-        <p className="projects-reveal text-[#c9a227] text-xs tracking-[0.25em] font-semibold uppercase mb-4">
+    <section id="projects" className="relative w-full bg-black px-6 py-24 md:px-16">
+      <div className="mx-auto max-w-6xl">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-[#c9a227]">
           Work
         </p>
-        <div className="projects-reveal w-10 h-px bg-[#c9a227] mb-10" />
-
-        {/* Heading */}
-        <h2 className="projects-reveal font-serif text-4xl md:text-6xl leading-[1.1] mb-6 max-w-xl">
+        <h2 className="text-3xl font-bold text-white sm:text-4xl md:text-5xl">
           Featured <span className="text-[#c9a227]">Projects.</span>
         </h2>
-
-        <p className="projects-reveal text-white/60 text-base md:text-lg max-w-xl mb-16 leading-relaxed">
-          A selection of things I&apos;ve designed, built, and shipped end to
-          end.
+        <p className="mt-4 max-w-xl text-gray-400">
+          A selection of things I&apos;ve designed, built, and shipped end to end.
         </p>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-          {sorted.map((project) => (
-            <ProjectCard key={project._id} project={project} />
-          ))}
-        </div>
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
+          {projects.map((project) => {
+            const thumbnail = project.screenshot
+              ? urlFor(project.screenshot).width(800).height(500).quality(75).url()
+              : null;
 
-        {sorted.length === 0 && (
-          <p className="text-white/40 text-center py-20">
-            Projects coming soon.
-          </p>
-        )}
+            return (
+              <ProjectCard
+                key={project._id}
+                title={project.title}
+                description={project.description}
+                thumbnail={thumbnail}
+                tags={project.techStack}
+                slug={project.slug?.current}
+                liveDemoUrl={project.liveDemoUrl}
+                githubUrl={project.githubUrl}
+              />
+            );
+          })}
+        </div>
       </div>
     </section>
   );
