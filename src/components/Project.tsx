@@ -167,3 +167,4 @@ export default function Project({ projects }: { projects: SanityProject[] }) {
     </section>
   );
 }
+
